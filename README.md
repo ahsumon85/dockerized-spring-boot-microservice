@@ -3,15 +3,15 @@
 ## Overview
 The architecture is composed by five services:
 
-   * [`micro-api-getway`](https://github.com/ahsumon85/advance-spring-boot-microservice#api-gateway-service): Dockerizing **API Gateway Service** using docker and docker-compose. 
+   * [`micro-api-getway`](https://github.com/ahsumon85/dockerized-spring-boot-microservice#api-gateway-service): Dockerizing **API Gateway Service** using docker and docker-compose. 
 
-   * [`micro-eureka-server`](https://github.com/ahsumon85/advance-spring-boot-microservice#eureka-service): Dockerizing **Eureka Service** using docker and docker-compose. 
+   * [`micro-eureka-server`](https://github.com/ahsumon85/dockerized-spring-boot-microservice#eureka-service): Dockerizing **Eureka Service** using docker and docker-compose. 
 
-   * [`micro-auth-service`](https://github.com/ahsumon85/advance-spring-boot-microservice#authorization-service): Dockerizing **Authorization Service** using docker and docker-compose application connection with two deferent database  **local** **database** and **docker database**
+   * [`micro-auth-service`](https://github.com/ahsumon85/dockerized-spring-boot-microservice#authorization-service): Dockerizing **Authorization Service** using docker and docker-compose application connection with two deferent database  **local** **database** and **docker database**
 
-   * [`micro-item-service`](https://github.com/ahsumon85/advance-spring-boot-microservice#item-service--resource-service):  Dockerizing **Item  Service** using docker and docker-compose application connection with two deferent database  **local** **database** and **docker database**
+   * [`micro-item-service`](https://github.com/ahsumon85/dockerized-spring-boot-microservice#item-service--resource-service):  Dockerizing **Item  Service** using docker and docker-compose application connection with two deferent database  **local** **database** and **docker database**
 
-   * [`micro-sales-service`](https://github.com/ahsumon85/advance-spring-boot-microservice#sales-service--resource-service): Dockerizing **Sales  Service** using docker and docker-compose application connection with two deferent database  **local** **database** and **docker database**
+   * [`micro-sales-service`](https://github.com/ahsumon85/dockerized-spring-boot-microservice#sales-service--resource-service): Dockerizing **Sales  Service** using docker and docker-compose application connection with two deferent database  **local** **database** and **docker database**
 
 
 ### Tools you will need
