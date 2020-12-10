@@ -1,6 +1,6 @@
-## Docker, Docker-composer with [advance-spring-boot-microservice](https://github.com/ahsumon85/advance-spring-boot-microservice)
+# Docker, Docker-composer with [advance-spring-boot-microservice](https://github.com/ahsumon85/advance-spring-boot-microservice)
 
-# Overview
+## Overview
 The architecture is composed by five services:
 
    * [`micro-api-getway`](https://github.com/ahsumon85/advance-spring-boot-microservice#api-gateway-service): Dockerizing **API Gateway Service** using docker and docker-compose. 
@@ -122,7 +122,7 @@ ENTRYPOINT ["java", "-jar", "X.X.0.1.jar"]
 
 
 
-# Eureka Service
+## Eureka Service
 
 Eureka Server is an application that holds the information about all client-service applications. Every Micro service will register into the Eureka server and Eureka server knows all the client applications running on each port and IP address. Eureka Server is also known as Discovery Server.
 
@@ -168,7 +168,7 @@ $ docker run -d \
 
 
 
-# Authorization Service
+## Authorization Service
 
 An **Authorization Server** issues tokens to client applications on behalf of a **Resource** Owner for use in authenticating subsequent API calls to the **Resource Server**. The **Resource Server** hosts the protected **resources**, and can accept or respond to protected **resource** requests using access tokens.
 
@@ -287,7 +287,7 @@ Now, add the Request Parameters as follows −
 
 
 
-# Item Service -resource service
+## Item Service -resource service
 
 Now we will see `micro-item-service` as a resource service. The `micro-item-service` a REST API that lets you CRUD (Create, Read, Update, and Delete) products. It creates a default set of items when the application loads using an `ItemApplicationRunner` bean.
 
@@ -385,7 +385,7 @@ On this repository we will see `docerized-microservice-architecture.postman_coll
 
 
 
-# Sales Service -resource service
+## Sales Service -resource service
 Now we will see `micro-sales-service` as a resource service. The `micro-sales-service` a REST API that lets you CRUD (Create, Read, Update, and Delete) products. It creates a default set of sales info when the application loads using an `SalesApplicationRunner` bean.
 
 ### Run the Spring Boot application using terminal 
@@ -485,7 +485,7 @@ On this repository we will see `dockerzide-microservice-architecture.postman_col
 
 
 
-# API Gateway Service
+## API Gateway Service
 
 Gateway Server is an application that transmit all API to desire services. every resource services information such us: `service-name, context-path` will beconfigured into the gateway service and every request will transmit configured services by gateway
 
