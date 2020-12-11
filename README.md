@@ -38,7 +38,7 @@ micro-auth-service  micro-eureka-service  micro-gateway-service  micro-item-serv
 $ mvn clean install
 ```
 
-**Run the Spring Boot application using terminal **
+**Run the Spring Boot application using terminal**
 
 ```
 $ java -jar micro-eureka-service/target/micro-eureka-service-0.0.1-SNAPSHOT.jar 
