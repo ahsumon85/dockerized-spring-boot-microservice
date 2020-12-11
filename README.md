@@ -13,6 +13,7 @@ The architecture is composed by five services:
 
    * [`micro-sales-service`](https://github.com/ahsumon85/dockerized-spring-boot-microservice#sales-service--resource-service): Dockerizing **Sales  Service** using docker and docker-compose application connection with two deferent database  **local** **database** and **docker database**
 
+##### [`microservice-docker-compose`](https://github.com/ahsumon85/dockerized-spring-boot-microservice#deployment-on-docker-compose): Dockerizing microservice using docker-compose apllication connect with local/remote database
 
 ### Tools you will need
 * Maven 3.0+ is your build tool
