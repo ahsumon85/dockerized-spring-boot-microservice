@@ -1,0 +1,378 @@
+{
+	"info": {
+		"_postman_id": "8c4e7f1c-93dd-4f12-aa1b-bc3f4ebcd4fa",
+		"name": "advance-microservice-architecture",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "item-service",
+			"item": [
+				{
+					"name": "find by item id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "4d7cdd91-3a5b-4fcb-9775-516dcd074d4f",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8180/item-api/item/find/by-id?id=2",
+							"host": [
+								"localhost"
+							],
+							"port": "8180",
+							"path": [
+								"item-api",
+								"item",
+								"find",
+								"by-id"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find item list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5360b344-7ad2-4c47-a2bb-82aa8e55d359",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "4d7cdd91-3a5b-4fcb-9775-516dcd074d4f",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8180/item-api/item/find",
+							"host": [
+								"localhost"
+							],
+							"port": "8180",
+							"path": [
+								"item-api",
+								"item",
+								"find"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Item add",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "10f0c3da-8426-4b97-a1c4-85c86c1e78c4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"itemName\": \"shart\",\n    \"itemSize\": \"M\"\n}"
+						},
+						"url": {
+							"raw": "localhost:8180/item-api/item/add",
+							"host": [
+								"localhost"
+							],
+							"port": "8180",
+							"path": [
+								"item-api",
+								"item",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Item",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "10f0c3da-8426-4b97-a1c4-85c86c1e78c4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8180/item-api/item/delete/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8180",
+							"path": [
+								"item-api",
+								"item",
+								"delete",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "sales-service",
+			"item": [
+				{
+					"name": "Find Sales List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "88042d82-d5bf-4a47-94e7-21bd322a8536",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "4d7cdd91-3a5b-4fcb-9775-516dcd074d4f",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8180/sales-api/sales/find",
+							"host": [
+								"localhost"
+							],
+							"port": "8180",
+							"path": [
+								"sales-api",
+								"sales",
+								"find"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sales add",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "10f0c3da-8426-4b97-a1c4-85c86c1e78c4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"productName\": \"shart\",\n    \"price\": \"150\"\n}"
+						},
+						"url": {
+							"raw": "localhost:8180/sales-api/sales/add",
+							"host": [
+								"localhost"
+							],
+							"port": "8180",
+							"path": [
+								"sales-api",
+								"sales",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find by sales id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "10f0c3da-8426-4b97-a1c4-85c86c1e78c4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8180/sales-api/sales/find/by-id?id=1",
+							"host": [
+								"localhost"
+							],
+							"port": "8180",
+							"path": [
+								"sales-api",
+								"sales",
+								"find",
+								"by-id"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Sales",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "10f0c3da-8426-4b97-a1c4-85c86c1e78c4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8180/sales-api/sales/delete/5",
+							"host": [
+								"localhost"
+							],
+							"port": "8180",
+							"path": [
+								"sales-api",
+								"sales",
+								"delete",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "auth-token",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "pin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "mobile",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8180/auth-api/oauth/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8180",
+					"path": [
+						"auth-api",
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
