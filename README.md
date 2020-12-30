@@ -132,7 +132,9 @@ The content of the file itself can look something like this:
 
 ![Screenshot from 2020-12-08 11-00-07](https://user-images.githubusercontent.com/31319842/101447224-f96f8600-394e-11eb-95ec-3245652809a1.png)
 
-### Let's build the image using this Dockerfile. Move to the root directory of the application and run this command:
+### Build the image using this Dockerfile. 
+
+**Move to the root directory of the application and run this command:**
 
 ```
 $ cd dockerized-spring-boot-microservice/micro-eureka-service/
@@ -210,7 +212,9 @@ The content of the file itself can look something like this:
 
 ![Screenshot from 2020-12-08 11-00-13](https://user-images.githubusercontent.com/31319842/101447221-f8d6ef80-394e-11eb-8afc-4d2295dbc9a0.png)
 
-### Let's build the image using this Dockerfile. Move to the root directory of the application and run this command:
+### Build the image using this Dockerfile. 
+
+**Move to the root directory of the application and run this command:**
 
 ```
 $ cd dockerized-spring-boot-microservice/micro-auth-service/
