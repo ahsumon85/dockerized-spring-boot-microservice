@@ -23,7 +23,6 @@ spring:
   application:
     name: auth-server
 
-
 eureka:
   client:
     service-url:

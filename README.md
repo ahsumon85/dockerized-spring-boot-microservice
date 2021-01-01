@@ -23,7 +23,7 @@ The architecture is composed by five services:
 
 ### Create Dockerfile for all services
 
-**Done, create  .jar with Maven.**
+**Create  .jar with Maven by build application**
 
 ```
 $ cd dockerized-spring-boot-microservice
@@ -62,7 +62,7 @@ Below we create simple `Dockerfile` under the project like as:
 
 ### Docker File
 
-**FORM**
+#### FORM
 
 A `Dockerfile` is a text file, contains all the commands to assemble the docker image. Review the commands in the `Dockerfile`:
 
@@ -72,7 +72,7 @@ It creates a docker image base on `openjdk:8` and download `jdk` from Docker Hub
 FROM openjdk:8
 ```
 
-**VOLUME**
+#### VOLUME
 
 A volume is a persistent data stored it used to stored log file into the local directory in the define location 
 
@@ -80,7 +80,7 @@ A volume is a persistent data stored it used to stored log file into the local d
 VOLUME /app/log
 ```
 
-**ADD**
+#### ADD
 
 This tells Docker to copy files from the local file-system to a specific folder inside the build image. Here, we copy our `.jar` file to the build image inside `target/X.X.0.1.jar`
 
@@ -98,7 +98,7 @@ ADD target/X.X.0.1.jar X.X.0.1.jar
 - `source` needs to be within the directory where the `docker build` command was run.
 - Multiple sources can be used in one `ADD` command.
 
-**EXPOSE**
+#### EXPOSE
 
 Writing `EXPOSE` in your Dockerfile, is merely a hint that a certain port is useful. Docker won’t do anything with that information by itself.
 
@@ -108,7 +108,7 @@ Defining a port as “exposed” doesn’t publish the port by itself.
 EXPOSE 8380
 ```
 
-**ENTRYPOINT**
+#### ENTRYPOINT
 
 Run the jar file with `ENTRYPOINT`.
 
@@ -137,7 +137,7 @@ The content of the file itself can look something like this:
 **Move to the root directory of the application and run this command:**
 
 ```
-$ cd dockerized-spring-boot-microservice/micro-eureka-service/
+$ cd micro-eureka-service/
 
 $ pwd
 /home/ahasan/dockerized-spring-boot-microservice/micro-eureka-service
@@ -172,13 +172,6 @@ $ docker run -d \
 
 An **Authorization Server** issues tokens to client applications on behalf of a **Resource** Owner for use in authenticating subsequent API calls to the **Resource Server**. The **Resource Server** hosts the protected **resources**, and can accept or respond to protected **resource** requests using access tokens.
 
-### Create  .jar with Maven by build project.
-
-````
-$ cd dockerized-spring-boot-microservice
-$ mvn clean install
-````
-
 ### Run the Spring Boot application using terminal 
 
 ```
@@ -191,14 +184,14 @@ First of all we need to change the **database** connection details and **eureka*
 
 - container name **i.e.eureka** instead of **localhost**. The **eureka** must be container name of eureka server
 
-- container name **i.e.mysqldb** instead of **localhost**. The **mysqldb** must be container name of database server
+- hostname  **i.e.mysqldb** instead of **localhost** in url. The **mysqldb** must have database hostname
 
 ```
 spring:
   datasource:
     url: jdbc:mysql://mysqldb:3306/spring_rest?createDatabaseIfNotExist=true
-    username: admin
-    password: Ati@2020
+    username: [local_db_username]
+    password: [local_db_password]
  
 eureka:
   client:
@@ -217,13 +210,15 @@ The content of the file itself can look something like this:
 **Move to the root directory of the application and run this command:**
 
 ```
-$ cd dockerized-spring-boot-microservice/micro-auth-service/
+$ cd micro-auth-service/
 
 $ pwd
 /home/ahasan/dockerized-spring-boot-microservice/micro-auth-service
 
 $ ls
 Dockerfile  pom.xml  src  target
+
+$ mvn clean install
 
 $ docker build . -t auth-server:0.1
 ```
@@ -242,7 +237,7 @@ Start the docker container `auth-server:0.1`, run the `micro-auth-service/target
 - Add `run -d` to start the container in detach mode – run the container in the background.
 - Add `auth-server:0.1 ` image name
 
-#### Authorization service run with local or remote database
+#### Authorization service run with local/remote database
 
 
 ```
@@ -296,11 +291,87 @@ Now, add the Request Parameters as follows −
 
 Now we will see `micro-item-service` as a resource service. The `micro-item-service` a REST API that lets you CRUD (Create, Read, Update, and Delete) products. It creates a default set of items when the application loads using an `ItemApplicationRunner` bean.
 
-Eureka Discovery-Service URL: `http://localhost:8761`
+### Run the Spring Boot application using terminal 
+
+```
+$ java -jar micro-item-service/target/micro-item-service-0.0.1-SNAPSHOT.jar
+```
+
+### Dockerizing the Item Service using `Dockerfile`
+
+First of all we need to change the **database** connection and **eureka** server ip  of the **application.properties**
+
+- container name **i.e.eureka** instead of **localhost**. The **eureka** must be container name of **eureka** server
+- hostname  **i.e.itemdb** instead of **localhost** in url. The **itemdb** must have database hostname
+- container name **i.e.auth** instead of **localhost** The **auth** must be container name of **auth** server
+
+```
+spring.datasource.url=jdbc:mysql://itemdb:3306/item_service
+spring.datasource.username=[local_db_username]
+spring.datasource.password=[local_db_password]
+ 
+eureka.client.serviceUrl.defaultZone=http://eureka:8761/eureka/
+eureka.client.register-with-eureka=true
+eureka.client.fetch-registry=true
+eureka.instance.preferIpAddress=true
+
+security.oauth2.resource.token-info-uri=http://auth:9191/auth-api/oauth/check_token
+security.oauth2.client.client-id=mobile
+security.oauth2.client.client-secret=pin
+```
+
+The content of the file itself can look something like this:
+
+![Screenshot from 2020-12-10 11-42-42](https://user-images.githubusercontent.com/31319842/101726649-26ea3a00-3add-11eb-84d2-a7f7537fa557.png)
+
+### Build the image using this Dockerfile. 
+
+**Move to the root directory of the application and run this command:**
+
+```
+$ cd micro-item-service/
+
+$ pwd
+/home/ahasan/dockerized-spring-boot-microservice/micro-item-service
+
+$ ls
+Dockerfile  pom.xml  src  target
+
+$ mvn clean install
+
+$ docker build . -t item-server:0.1
+```
+
+### Run docker item-server image
+
+Start the docker container `item-server:0.1`, run the `micro-item-service/target/micro-item-service-0.0.1-SNAPSHOT.jar` file during startup.
+
+### Run item service using docker
+
+- Add `run --name`to create container name
+- Add `run -p` to map ports.
+- Add `run -v` to map stored log file into the local directory
+- Add `run ---add-host` to connect remote database from container application 
+- Add `run --link` to connect with **eureka** and **auth** container
+- Add `run -d` to start the container in detach mode – run the container in the background.
+- Add `item-server:0.1 ` image name
+
+#### Item service run with local/remote database
+
+
+```
+$ docker run --name item \
+        -p 8280:8280 \
+        -v /opt/docker/log:/app/log \
+        --add-host itemdb:192.168.0.33 \
+        --link eureka:eureka \
+        --link auth:auth \
+        -d item-server:0.1  
+```
 
 After sucessfully run we can refresh Eureka Discovery-Service URL: `http://localhost:8761` will see `item-server` instance gate will be running on `8280` port
 
-***Test HTTP GET Request on item-service -resource service***
+### Test HTTP GET Request on item-service -resource service
 ```
 curl --request GET 'localhost:8180/item-api/item/find' --header 'Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787'
 ```
@@ -310,13 +381,93 @@ curl --request GET 'localhost:8180/item-api/item/find' --header 'Authorization: 
 * Here `[Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787']` `Bearer` is toiken type and `62e2545c-d865-4206-9e23-f64a34309787` is auth service provided token
 
 
-### For getting All API Information
-On this repository we will see `secure-microservice-architecture.postman_collection.json` file, this file have to `import` on postman then we will ses all API information for testing api.
+#### For getting All API Information
+On this repository we will see `docerized-microservice-architecture.postman_collection.json` file, this file have to `import` on postman then we will ses all API information for testing api.
 
 
 
 # Sales Service -resource service
-Eureka Discovery-Service URL: `http://localhost:8761`
+Now we will see `micro-sales-service` as a resource service. The `micro-sales-service` a REST API that lets you CRUD (Create, Read, Update, and Delete) products. It creates a default set of sales info when the application loads using an `SalesApplicationRunner` bean.
+
+### Run the Spring Boot application using terminal 
+
+```
+$ java -jar micro-sales-service/target/micro-sales-service-0.0.1-SNAPSHOT.jar
+```
+
+### Dockerizing the sales Service using `Dockerfile`
+
+First of all we need to change the **database** connection and **eureka** server ip  of the **application.properties**
+
+- container name **i.e.eureka** instead of **localhost**. The **eureka** must be container name of **eureka** server
+- hostname  **i.e.salesdb** instead of **localhost** in url. The **salesdb** must have database hostname
+- container name **i.e.auth** instead of **localhost** The **auth** must be container name of **auth** server
+
+```
+spring.datasource.url=jdbc:mysql://salesdb:3306/sales_service
+spring.datasource.username=[local_db_username]
+spring.datasource.password=[local_db_password]
+ 
+eureka.client.serviceUrl.defaultZone=http://eureka:8761/eureka/
+eureka.client.register-with-eureka=true
+eureka.client.fetch-registry=true
+eureka.instance.preferIpAddress=true
+
+security.oauth2.resource.token-info-uri=http://auth:9191/auth-api/oauth/check_token
+security.oauth2.client.client-id=mobile
+security.oauth2.client.client-secret=pin
+```
+
+The content of the file itself can look something like this:
+
+![Screenshot from 2020-12-08 10-59-42](https://user-images.githubusercontent.com/31319842/101447230-fc6a7680-394e-11eb-9e61-3470c84fca3c.png)
+
+### Build the image using this Dockerfile. 
+
+**Move to the root directory of the application and run this command:**
+
+```
+$ cd micro-sales-service/
+
+$ pwd
+/home/ahasan/dockerized-spring-boot-microservice/micro-sales-service
+
+$ ls
+Dockerfile  pom.xml  src  target
+
+$ mvn clean install
+
+$ docker build . -t sales-server:0.1
+```
+
+### Run docker sales-server image
+
+Start the docker container `sales-server:0.1`, run the `micro-sales-service/target/micro-sales-service-0.0.1-SNAPSHOT.jar` file during startup.
+
+### Run sales service using docker
+
+- Add `run --name`to create container name
+- Add `run -p` to map ports.
+- Add `run -v` to map stored log file into the local directory
+- Add `run ---add-host` to connect remote database from container application 
+- Add `run --link` to connect with **eureka** and **auth** container
+- Add `run -d` to start the container in detach mode – run the container in the background.
+- Add `sales-server:0.1 ` image name
+
+#### Item service run with local/remote database
+
+
+```
+$ docker run --name sales \
+        -p 8380:8380 \
+        -v /opt/docker/log:/app/log \
+        --add-host salesdb:192.168.0.33 \
+        --link eureka:eureka \
+        --link auth:auth \
+        -d sales-server:0.1  
+```
+
+
 
 After sucessfully run we can refresh Eureka Discovery-Service URL: `http://localhost:8761` will see `sales-server` instance gate will be run on `http://localhost:8280` port
 
@@ -362,16 +513,9 @@ Tested with
 
 
 
-### Dockerizing the Item Service using `Dockerfile`
 
-The content of the file itself can look something like this:
 
-![Screenshot from 2020-12-08 10-59-49](https://user-images.githubusercontent.com/31319842/101447229-fbd1e000-394e-11eb-8686-e42a0bd1c1fc.png)
-### Dockerizing the Sales Service using `Dockerfile`
 
-The content of the file itself can look something like this:
-
-![Screenshot from 2020-12-08 10-59-42](https://user-images.githubusercontent.com/31319842/101447230-fc6a7680-394e-11eb-9e61-3470c84fca3c.png)
 ### Dockerizing the Gateway Service using `Dockerfile`
 
 The content of the file itself can look something like this:
