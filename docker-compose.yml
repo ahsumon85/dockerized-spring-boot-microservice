@@ -1,0 +1,117 @@
+version: "3.8"
+
+services:
+
+        eureka:
+                build: ./micro-eureka-service/
+                image: eureka-server:0.1
+                container_name: eureka
+                ports:
+                        - "8761:8761"
+                networks:
+                        micro_network:
+                                ipv4_address: 172.19.0.2
+                deploy:
+                        resources:
+                                limits:
+                                        cpus: '0.50'
+                                        memory: 512M
+        
+
+        auth:
+                build: ./micro-auth-service/
+                image: auth-server:0.1
+                container_name: auth
+                ports:
+                        - "9191:9191"
+                extra_hosts:
+                        - "mysqldb:192.168.0.33"
+                links:
+                        - eureka
+                # depends_on:
+                #         - eureka
+                volumes:
+                        - /opt/docker/log:/app/log
+                networks:
+                        micro_network:
+                                ipv4_address: 172.19.0.3
+                deploy:
+                        resources:
+                                limits:
+                                        cpus: '0.50'
+                                        memory: 1G
+
+
+        item:
+                build: ./micro-item-service/
+                image: item-server:0.1
+                container_name: item
+                ports:
+                        - "8280:8280"
+                extra_hosts:
+                        - "itemdb:192.168.0.33"
+                links:
+                        - eureka
+                        - auth
+                        - gateway
+                volumes:
+                        - /opt/docker/log:/app/log
+                networks:
+                        micro_network:
+                                ipv4_address: 172.19.0.4
+                deploy:
+                        resources:
+                                limits:
+                                        cpus: '0.50'
+                                        memory: 512M
+        
+
+        sales:
+                build: ./micro-sales-service/
+                image: sales-server:0.1
+                container_name: sales
+                ports:
+                        - "8380:8380"
+                extra_hosts:
+                        - "salesdb:192.168.0.33"
+                links:
+                        - eureka
+                        - auth
+                        - gateway
+                volumes:
+                        - /opt/docker/log:/app/log
+                networks:
+                        micro_network:
+                                ipv4_address: 172.19.0.5
+                deploy:
+                        resources:
+                                limits:
+                                        cpus: '0.50'
+                                        memory: 512M
+
+        gateway:
+                build: ./micro-gateway-service/
+                image: gateway-server:0.1
+                container_name: gateway
+                links:
+                        - eureka
+                ports:
+                        - "8180:8180"
+                networks:
+                        micro_network:
+                                ipv4_address: 172.19.0.6
+                deploy:
+                        resources:
+                                limits:
+                                        cpus: '0.50'
+                                        memory: 512M
+
+        
+networks:
+        micro_network:
+                driver: bridge  
+                ipam:
+                        driver: default
+                        config:
+                                - subnet: "172.19.0.0/16"
+    

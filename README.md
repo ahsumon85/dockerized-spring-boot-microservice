@@ -19,7 +19,7 @@ The architecture is composed by five services:
 * JDK 1.8
 * Local MySQL Server and Dockerized MySQL Server
 * Docker version 19
-* Docker-Compose Version 1.25.0-1
+* docker-compose version 1.27.4
 
 ### Create Dockerfile for all services
 
@@ -564,7 +564,7 @@ After we seen start `auth, sales, item, zuul` instance then we can try `dockeriz
 
 
 
-## GET Request on auth service by gateway service
+### POST Request on auth service by gateway service
 
 ```
 curl --location --request POST 'http://localhost:8180/auth-api/oauth/token' \
@@ -578,7 +578,7 @@ curl --location --request POST 'http://localhost:8180/auth-api/oauth/token' \
 * Here `[http://localhost:8180/auth-api/oauth/token]` on the `http` means protocol, `localhost` for host address 8180 are gateway service port because every api will be transmit by the 
   gateway service, `auth-api` are application context path of item service and `/oauth/token` is method URL.
 
-## GET Request on sales service by gateway service
+### GET Request on sales service by gateway service
 
 ```
 curl --request GET 'localhost:8180/sales-api/sales/find' --header 'Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787'
@@ -588,7 +588,7 @@ curl --request GET 'localhost:8180/sales-api/sales/find' --header 'Authorization
   gateway service, `sales-api` are application context path of item service and `/sales/find` is method URL.
 * Here `[Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787']` `Bearer` is toiken type and `62e2545c-d865-4206-9e23-f64a34309787` is auth service provided token
 
-## GET Request on item-service by gateway service
+### GET Request on item-service by gateway service
 
 ```
 curl --request GET 'localhost:8180/item-api/item/find' --header 'Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787'
@@ -598,3 +598,131 @@ curl --request GET 'localhost:8180/item-api/item/find' --header 'Authorization: 
   gateway service, `item-api` are application context path of item service and `/item/find` is method URL.
 
 * Here `[Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787']` `Bearer` is toiken type and `62e2545c-d865-4206-9e23-f64a34309787` is auth service provided token
+
+
+
+## Deployment on docker-compose 
+
+### Build and Run microservice using docker-compose
+
+```
+version: "3.8"
+
+services:
+
+        eureka:
+                build: ./micro-eureka-service/
+                image: eureka-server:0.1
+                container_name: eureka
+                ports:
+                        - "8761:8761"
+                networks:
+                        micro_network:
+                                ipv4_address: 172.19.0.2
+                deploy:
+                        resources:
+                                limits:
+                                        cpus: '0.50'
+                                        memory: 512M
+        
+
+        auth:
+                build: ./micro-auth-service/
+                image: auth-server:0.1
+                container_name: auth
+                ports:
+                        - "9191:9191"
+                extra_hosts:
+                        - "mysqldb:192.168.0.33"
+                links:
+                        - eureka
+                # depends_on:
+                #         - eureka
+                volumes:
+                        - /opt/docker/log:/app/log
+                networks:
+                        micro_network:
+                                ipv4_address: 172.19.0.3
+                deploy:
+                        resources:
+                                limits:
+                                        cpus: '0.50'
+                                        memory: 1G
+
+
+        item:
+                build: ./micro-item-service/
+                image: item-server:0.1
+                container_name: item
+                ports:
+                        - "8280:8280"
+                extra_hosts:
+                        - "itemdb:192.168.0.33"
+                links:
+                        - eureka
+                        - auth
+                        - gateway
+                volumes:
+                        - /opt/docker/log:/app/log
+                networks:
+                        micro_network:
+                                ipv4_address: 172.19.0.4
+                deploy:
+                        resources:
+                                limits:
+                                        cpus: '0.50'
+                                        memory: 512M
+        
+
+        sales:
+                build: ./micro-sales-service/
+                image: sales-server:0.1
+                container_name: sales
+                ports:
+                        - "8380:8380"
+                extra_hosts:
+                        - "salesdb:192.168.0.33"
+                links:
+                        - eureka
+                        - auth
+                        - gateway
+                volumes:
+                        - /opt/docker/log:/app/log
+                networks:
+                        micro_network:
+                                ipv4_address: 172.19.0.5
+                deploy:
+                        resources:
+                                limits:
+                                        cpus: '0.50'
+                                        memory: 512M
+
+        gateway:
+                build: ./micro-gateway-service/
+                image: gateway-server:0.1
+                container_name: gateway
+                links:
+                        - eureka
+                ports:
+                        - "8180:8180"
+                networks:
+                        micro_network:
+                                ipv4_address: 172.19.0.6
+                deploy:
+                        resources:
+                                limits:
+                                        cpus: '0.50'
+                                        memory: 512M
+
+        
+networks:
+        micro_network:
+                driver: bridge  
+                ipam:
+                        driver: default
+                        config:
+                                - subnet: "172.19.0.0/16"
+    
+
+```
+
