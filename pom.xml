@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
     <groupId>com.ahasan</groupId>
-    <artifactId>advance-microservice-architecture</artifactId>
+    <artifactId>dockerized-microservice-architecture</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
 

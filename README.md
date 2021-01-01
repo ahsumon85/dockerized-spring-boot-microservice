@@ -258,7 +258,7 @@ Let’s get the access token for `admin` by passing his credentials as part of h
 
 Now hit the POST method URL via POSTMAN to get the OAUTH2 token.
 
-**`http://localhost:8180/oauth/token`**
+**`http://localhost:9191/oauth/token`**
 
 Now, add the Request Headers as follows −
 
@@ -373,11 +373,10 @@ After sucessfully run we can refresh Eureka Discovery-Service URL: `http://local
 
 ### Test HTTP GET Request on item-service -resource service
 ```
-curl --request GET 'localhost:8180/item-api/item/find' --header 'Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787'
+curl --request GET 'localhost:8280/item-api/item/find' --header 'Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787'
 ```
-* Here `[http://localhost:8180/item-api/item/find]` on the `http` means protocol, `localhost` for hostaddress `8180` are gateway service port because every api will be transmit by the   
-  gateway service, `item-api` are application context path of item service and `/item/find` is method URL.
-
+* Here `[http://localhost:8280/item-api/item/find]` on the `http` means protocol, `localhost` for hostaddress `8280` are sales service port, `item-api` are application context path of item service and `/item/find` is method URL.
+  
 * Here `[Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787']` `Bearer` is toiken type and `62e2545c-d865-4206-9e23-f64a34309787` is auth service provided token
 
 
@@ -469,20 +468,20 @@ $ docker run --name sales \
 
 
 
-After sucessfully run we can refresh Eureka Discovery-Service URL: `http://localhost:8761` will see `sales-server` instance gate will be run on `http://localhost:8280` port
+After sucessfully run we can refresh Eureka Discovery-Service URL: `http://localhost:8761` will see `sales-server` instance gate will be run on `http://localhost:8380` port
 
-#### Test HTTP GET Request on resource service -resource service
-```
-curl --request GET 'localhost:8180/sales-api/sales/find' --header 'Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787'
-```
-* Here `[http://localhost:8180/sales-api/sales/find]` on the `http` means protocol, `localhost` for hostaddress `8180` are gateway service port because every api will be transmit by the   
-  gateway service, `sales-api` are application context path of item service and `/sales/find` is method URL.
+### Test HTTP GET Request on sales service -resource service
 
+```
+curl --request GET 'localhost:8380/sales-api/sales/find' --header 'Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787'
+```
+* Here `[http://localhost:8380/sales-api/sales/find]` on the `http` means protocol, `localhost` for hostaddress `8380` are sales service port, `sales-api` are application context path of item service and `/sales/find` is method URL.
+  
 * Here `[Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787']` `Bearer` is toiken type and `62e2545c-d865-4206-9e23-f64a34309787` is auth service provided token
 
+#### For getting All API Information
 
-### For getting All API Information
-On this repository we will see `secure-microservice-architecture.postman_collection.json` file, this file have to `import` on postman then we will ses all API information for testing api.
+On this repository we will see `dockerzide-microservice-architecture.postman_collection.json` file, this file have to `import` on postman then we will ses all API information for testing api.
 
 
 
@@ -490,36 +489,112 @@ On this repository we will see `secure-microservice-architecture.postman_collect
 
 Gateway Server is an application that transmit all API to desire services. every resource services information such us: `service-name, context-path` will beconfigured into the gateway service and every request will transmit configured services by gateway
 
-After sucessfully run we can refresh Eureka Discovery-Service URL: `http://localhost:8761` will see `zuul-server` on eureka dashboard. the gateway instance will be run on `http://localhost:8180` port
+### Run the Spring Boot application using terminal 
 
-![Screenshot from 2020-11-15 11-21-33](https://user-images.githubusercontent.com/31319842/99894579-6af0d880-2caf-11eb-84aa-d41b16cfbd12.png)
+```
+$ java -jar micro-gateway-service/target/micro-gateway-service-0.0.1-SNAPSHOT.jar
+```
 
-After we seen start auth, sales, item, zuul instance then we can try `advance-microservice-architecture.postman_collection.json` imported API from postman with token
+### Dockerizing the gateway Service using `Dockerfile`
 
+First of all we need to change the **eureka** server ip  in the **application.properties**
 
+- container name **i.e.eureka** instead of **localhost**. The **eureka** must be container name of **eureka** server
 
-# Docker Deployment
-
-Now we will show you how to Dockerize microservice.
-
-Tested with
-
-- Docker 19.03
-- Ubuntu 19
-- Java 8 or Java 11
-- Maven
-
-
-
-
-
-
-
-
-### Dockerizing the Gateway Service using `Dockerfile`
+```
+eureka.client.serviceUrl.defaultZone=http://eureka:8761/eureka/
+eureka.client.register-with-eureka=true
+eureka.client.fetch-registry=true
+eureka.instance.preferIpAddress=true
+```
 
 The content of the file itself can look something like this:
 
-![Screenshot from 2020-12-08 10-59-57](https://user-images.githubusercontent.com/31319842/101447226-fb394980-394e-11eb-81c7-4b72881d5ea5.png)
+![Screenshot from 2020-12-10 12-28-32](https://user-images.githubusercontent.com/31319842/101729975-60be3f00-3ae3-11eb-8b72-62ef2d10d211.png)
+
+### Build the image using this Dockerfile. 
+
+**Move to the root directory of the application and run this command:**
+
+```
+$ cd micro-gateway-service/
+
+$ pwd
+/home/ahasan/dockerized-spring-boot-microservice/micro-gateway-service
+
+$ ls
+Dockerfile  pom.xml  src  target
+
+$ mvn clean install
+
+$ docker build . -t gateway-server:0.1
+```
+
+### Run docker gateway-server image
+
+Start the docker container `sales-server:0.1`, run the `micro-gateway-service/target/micro-gateway-service-0.0.1-SNAPSHOT.jar` file during startup.
+
+### Run gateway service using docker
+
+- Add `run --name`to create container name
+- Add `run -p` to map ports.
+- Add `run -v` to map stored log file into the local directory
+- Add `run --link` to connect with **eureka** and **auth** container
+- Add `run -d` to start the container in detach mode – run the container in the background.
+- Add `gateway-server:0.1 ` image name
+
+#### Gateway service run
 
 
+```
+$ docker run --name gateway \
+        -p 8180:8180 \
+        -v /opt/docker/log:/app/log \
+        --link eureka:eureka \
+        -d gateway-server:0.1  
+```
+
+
+
+After sucessfully run we can refresh Eureka Discovery-Service URL: `http://localhost:8761` will see `gateway-server` on eureka dashboard. the gateway instance will be run on `http://localhost:8180` port
+
+![Screenshot from 2020-11-15 11-21-33](https://user-images.githubusercontent.com/31319842/99894579-6af0d880-2caf-11eb-84aa-d41b16cfbd12.png)
+
+After we seen start `auth, sales, item, zuul` instance then we can try `dockerized-microservice-architecture.postman_collection.json` imported API from postman with token. then we will pass request by `gateway-service` using `8180` port that is gateway port
+
+
+
+## GET Request on auth service by gateway service
+
+```
+curl --location --request POST 'http://localhost:8180/auth-api/oauth/token' \
+--header 'Authorization: Basic bW9iaWxlOnBpbg==' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'grant_type=password' \
+--data-urlencode 'username=ahasan' \
+--data-urlencode 'password=ahasan'
+```
+
+* Here `[http://localhost:8180/auth-api/oauth/token]` on the `http` means protocol, `localhost` for host address 8180 are gateway service port because every api will be transmit by the 
+  gateway service, `auth-api` are application context path of item service and `/oauth/token` is method URL.
+
+## GET Request on sales service by gateway service
+
+```
+curl --request GET 'localhost:8180/sales-api/sales/find' --header 'Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787'
+```
+
+* Here `[http://localhost:8180/sales-api/sales/find]` on the `http` means protocol, `localhost` for hostaddress 8180 are gateway service port because every api will be transmit by the 
+  gateway service, `sales-api` are application context path of item service and `/sales/find` is method URL.
+* Here `[Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787']` `Bearer` is toiken type and `62e2545c-d865-4206-9e23-f64a34309787` is auth service provided token
+
+## GET Request on item-service by gateway service
+
+```
+curl --request GET 'localhost:8180/item-api/item/find' --header 'Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787'
+```
+
+* Here `[http://localhost:8280/item-api/item/find]` on the `http` means protocol, `localhost` for hostaddress `8180` are gateway service port because every api will be transmit by the   
+  gateway service, `item-api` are application context path of item service and `/item/find` is method URL.
+
+* Here `[Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787']` `Bearer` is toiken type and `62e2545c-d865-4206-9e23-f64a34309787` is auth service provided token
