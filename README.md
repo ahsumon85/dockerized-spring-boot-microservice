@@ -726,3 +726,19 @@ networks:
 
 ```
 
+
+
+- **`version "3.8"`:** This denotes that we are using version 3 of Docker Compose, and Docker will provide the appropriate features. At the time of writing this article, version 3.7 is latest version of Compose.
+- **`services`:** This section defines all the different containers we will create. In our example, we have two services, web and database.
+- **`eureka`:** This is the name of our Eureka container name.
+- **`auth`:** This is the name of our authorization container name.
+- **`item`:** This is the name of our Item container name.
+- **`sales`:** This is the name of our Sales container name.
+- **`gateway`:** This is the name of our Gateway container name.
+- **`build`:** This specifies the location of our Dockerfile, and `.` represents the directory where the `docker-compose.yml` file is located.
+- **`ports`:** This is used to map the container’s ports to the host machine.
+- **`extra_hosts`** This is used to map local database from container 
+- **`volumes`:** This is just like the `-v` option for mounting disks in Docker. In this example, we attach our code files directory to the containers’ `./code` directory. This way, we won’t have to rebuild the images if changes are made.
+- **`links`:** This will link one service to another. For the bridge network, we must specify which container should be accessible to which container using links.
+- **`image`:** If we don’t have a Dockerfile and want to run a service using a pre-built image, we specify the image location using the `image` clause. Compose will fork a container from that image.
+- **`environment`:** The clause allows us to set up an environment variable in the container. This is the same as the `-e` argument in Docker when running a container.
