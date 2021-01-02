@@ -765,7 +765,7 @@ $ mvn clean install
 $ docker-compose up
 ```
 
-**TO see the application logs**
+**To see the running containers logs on the terminal**
 
 ```
 $ docker logs -f eureka
