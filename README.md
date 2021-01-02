@@ -603,7 +603,16 @@ curl --request GET 'localhost:8180/item-api/item/find' --header 'Authorization: 
 
 ## Deployment on docker-compose 
 
-### Build and Run microservice using docker-compose
+### Remove running container of this name
+
+```
+$ dokcer rm -f eureka auth item sales gateway
+
+$ dokcer rmi -f eureka-server:0.1 auth-server:0.1 item-server:0.1 
+				sales-server:0.1 gateway-server:0.1
+```
+
+### Create `docker-compose` file in root directory of the application
 
 ```
 version: "3.8"
@@ -625,7 +634,6 @@ services:
                                         cpus: '0.50'
                                         memory: 512M
         
-
         auth:
                 build: ./micro-auth-service/
                 image: auth-server:0.1
@@ -648,7 +656,6 @@ services:
                                 limits:
                                         cpus: '0.50'
                                         memory: 1G
-
 
         item:
                 build: ./micro-item-service/
@@ -673,7 +680,6 @@ services:
                                         cpus: '0.50'
                                         memory: 512M
         
-
         sales:
                 build: ./micro-sales-service/
                 image: sales-server:0.1
@@ -713,7 +719,6 @@ services:
                                 limits:
                                         cpus: '0.50'
                                         memory: 512M
-
         
 networks:
         micro_network:
@@ -742,3 +747,78 @@ networks:
 - **`links`:** This will link one service to another. For the bridge network, we must specify which container should be accessible to which container using links.
 - **`image`:** If we don’t have a Dockerfile and want to run a service using a pre-built image, we specify the image location using the `image` clause. Compose will fork a container from that image.
 - **`environment`:** The clause allows us to set up an environment variable in the container. This is the same as the `-e` argument in Docker when running a container.
+
+### Build and Run the images using `docker-composer` 
+
+**Move to the root directory of the application and run this command:**
+
+```
+$ cd dockerized-spring-boot-microservice/
+
+$ pwd
+/home/ahasan/dockerized-spring-boot-microservice
+
+$ ls
+micro-auth-service  micro-gateway-service  micro-sales-service  micro-eureka-service micro-item-service  pom.xml  docker-compose.yml
+
+$ mvn clean install
+
+$ docker-compose up
+```
+
+**TO see the application logs**
+
+```
+$ docker logs -f eureka
+
+$ docker logs -f auth
+
+$ docker logs -f item
+
+$ dokcer logs -f sales
+
+$ docker logs -f gateway
+```
+
+
+
+After sucessfully run we can refresh Eureka Discovery-Service URL: `http://localhost:8761` will see `gateway-server` on eureka dashboard. the gateway instance will be run on `http://localhost:8180` port
+
+![Screenshot from 2020-11-15 11-21-33](https://user-images.githubusercontent.com/31319842/99894579-6af0d880-2caf-11eb-84aa-d41b16cfbd12.png)
+
+After we seen start `auth, sales, item, zuul` instance then we can try `dockerized-microservice-architecture.postman_collection.json` imported API from postman with token. then we will pass request by `gateway-service` using `8180` port that is gateway port
+
+### POST Request on auth service by gateway service
+
+```
+curl --location --request POST 'http://localhost:8180/auth-api/oauth/token' \
+--header 'Authorization: Basic bW9iaWxlOnBpbg==' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'grant_type=password' \
+--data-urlencode 'username=ahasan' \
+--data-urlencode 'password=ahasan'
+```
+
+* Here `[http://localhost:8180/auth-api/oauth/token]` on the `http` means protocol, `localhost` for host address 8180 are gateway service port because every api will be transmit by the 
+  gateway service, `auth-api` are application context path of item service and `/oauth/token` is method URL.
+
+### GET Request on sales service by gateway service
+
+```
+curl --request GET 'localhost:8180/sales-api/sales/find' --header 'Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787'
+```
+
+* Here `[http://localhost:8180/sales-api/sales/find]` on the `http` means protocol, `localhost` for hostaddress 8180 are gateway service port because every api will be transmit by the 
+  gateway service, `sales-api` are application context path of item service and `/sales/find` is method URL.
+* Here `[Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787']` `Bearer` is toiken type and `62e2545c-d865-4206-9e23-f64a34309787` is auth service provided token
+
+### GET Request on item-service by gateway service
+
+```
+curl --request GET 'localhost:8180/item-api/item/find' --header 'Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787'
+```
+
+* Here `[http://localhost:8280/item-api/item/find]` on the `http` means protocol, `localhost` for hostaddress `8180` are gateway service port because every api will be transmit by the   
+  gateway service, `item-api` are application context path of item service and `/item/find` is method URL.
+
+* Here `[Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787']` `Bearer` is toiken type and `62e2545c-d865-4206-9e23-f64a34309787` is auth service provided token
