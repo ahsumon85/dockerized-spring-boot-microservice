@@ -1,18 +1,20 @@
-## Docker, Docker-composer with [advance-spring-boot-microservice](https://github.com/ahsumon85/advance-spring-boot-microservice)
+# Docker, Docker-composer with [advance-spring-boot-microservice](https://github.com/ahsumon85/advance-spring-boot-microservice)
+![1_cFEH7PQEJo7C9iRlGukWkg](https://user-images.githubusercontent.com/31319842/101862601-e6ea8c00-3b9c-11eb-8843-4bf612f97931.png)
 
-# Overview
+## Overview
 The architecture is composed by five services:
 
-   * [`micro-api-getway`](https://github.com/ahsumon85/advance-spring-boot-microservice#api-gateway-service): Dockerizing **API Gateway Service** using docker and docker-compose. 
+   * [`micro-api-getway`](https://github.com/ahsumon85/dockerized-spring-boot-microservice#api-gateway-service): Dockerizing **API Gateway Service** using docker and docker-compose. 
 
-   * [`micro-eureka-server`](https://github.com/ahsumon85/advance-spring-boot-microservice#eureka-service): Dockerizing **Eureka Service** using docker and docker-compose. 
+   * [`micro-eureka-server`](https://github.com/ahsumon85/dockerized-spring-boot-microservice#eureka-service): Dockerizing **Eureka Service** using docker and docker-compose. 
 
-   * [`micro-auth-service`](https://github.com/ahsumon85/advance-spring-boot-microservice#authorization-service): Dockerizing **Authorization Service** using docker and docker-compose application connection with two deferent database  **local** **database** and **docker database**
+   * [`micro-auth-service`](https://github.com/ahsumon85/dockerized-spring-boot-microservice#authorization-service): Dockerizing **Authorization Service** using docker and docker-compose application connection with two deferent database  **local** **database** and **docker database**
 
-   * [`micro-item-service`](https://github.com/ahsumon85/advance-spring-boot-microservice#item-service--resource-service):  Dockerizing **Item  Service** using docker and docker-compose application connection with two deferent database  **local** **database** and **docker database**
+   * [`micro-item-service`](https://github.com/ahsumon85/dockerized-spring-boot-microservice#item-service--resource-service):  Dockerizing **Item  Service** using docker and docker-compose application connection with two deferent database  **local** **database** and **docker database**
 
-   * [`micro-sales-service`](https://github.com/ahsumon85/advance-spring-boot-microservice#sales-service--resource-service): Dockerizing **Sales  Service** using docker and docker-compose application connection with two deferent database  **local** **database** and **docker database**
+   * [`micro-sales-service`](https://github.com/ahsumon85/dockerized-spring-boot-microservice#sales-service--resource-service): Dockerizing **Sales  Service** using docker and docker-compose application connection with two deferent database  **local** **database** and **docker database**
 
+##### [`microservice-docker-compose`](https://github.com/ahsumon85/dockerized-spring-boot-microservice#deployment-on-docker-compose): Dockerizing microservice using docker-compose apllication connect with local/remote database
 
 ### Tools you will need
 * Maven 3.0+ is your build tool
@@ -37,7 +39,7 @@ micro-auth-service  micro-eureka-service  micro-gateway-service  micro-item-serv
 $ mvn clean install
 ```
 
-**Run the Spring Boot application using terminal **
+**Run the Spring Boot application using terminal**
 
 ```
 $ java -jar micro-eureka-service/target/micro-eureka-service-0.0.1-SNAPSHOT.jar 
@@ -122,7 +124,7 @@ ENTRYPOINT ["java", "-jar", "X.X.0.1.jar"]
 
 
 
-# Eureka Service
+## Eureka Service
 
 Eureka Server is an application that holds the information about all client-service applications. Every Micro service will register into the Eureka server and Eureka server knows all the client applications running on each port and IP address. Eureka Server is also known as Discovery Server.
 
@@ -168,7 +170,7 @@ $ docker run -d \
 
 
 
-# Authorization Service
+## Authorization Service
 
 An **Authorization Server** issues tokens to client applications on behalf of a **Resource** Owner for use in authenticating subsequent API calls to the **Resource Server**. The **Resource Server** hosts the protected **resources**, and can accept or respond to protected **resource** requests using access tokens.
 
@@ -287,7 +289,7 @@ Now, add the Request Parameters as follows −
 
 
 
-# Item Service -resource service
+## Item Service -resource service
 
 Now we will see `micro-item-service` as a resource service. The `micro-item-service` a REST API that lets you CRUD (Create, Read, Update, and Delete) products. It creates a default set of items when the application loads using an `ItemApplicationRunner` bean.
 
@@ -385,7 +387,7 @@ On this repository we will see `docerized-microservice-architecture.postman_coll
 
 
 
-# Sales Service -resource service
+## Sales Service -resource service
 Now we will see `micro-sales-service` as a resource service. The `micro-sales-service` a REST API that lets you CRUD (Create, Read, Update, and Delete) products. It creates a default set of sales info when the application loads using an `SalesApplicationRunner` bean.
 
 ### Run the Spring Boot application using terminal 
@@ -466,8 +468,6 @@ $ docker run --name sales \
         -d sales-server:0.1  
 ```
 
-
-
 After sucessfully run we can refresh Eureka Discovery-Service URL: `http://localhost:8761` will see `sales-server` instance gate will be run on `http://localhost:8380` port
 
 ### Test HTTP GET Request on sales service -resource service
@@ -485,7 +485,7 @@ On this repository we will see `dockerzide-microservice-architecture.postman_col
 
 
 
-# API Gateway Service
+## API Gateway Service
 
 Gateway Server is an application that transmit all API to desire services. every resource services information such us: `service-name, context-path` will beconfigured into the gateway service and every request will transmit configured services by gateway
 
@@ -728,7 +728,6 @@ networks:
                         config:
                                 - subnet: "172.19.0.0/16"
     
-
 ```
 
 
@@ -780,8 +779,6 @@ $ dokcer logs -f sales
 $ docker logs -f gateway
 ```
 
-
-
 After sucessfully run we can refresh Eureka Discovery-Service URL: `http://localhost:8761` will see `gateway-server` on eureka dashboard. the gateway instance will be run on `http://localhost:8180` port
 
 ![Screenshot from 2020-11-15 11-21-33](https://user-images.githubusercontent.com/31319842/99894579-6af0d880-2caf-11eb-84aa-d41b16cfbd12.png)
@@ -822,3 +819,4 @@ curl --request GET 'localhost:8180/item-api/item/find' --header 'Authorization: 
   gateway service, `item-api` are application context path of item service and `/item/find` is method URL.
 
 * Here `[Authorization: Bearer 62e2545c-d865-4206-9e23-f64a34309787']` `Bearer` is toiken type and `62e2545c-d865-4206-9e23-f64a34309787` is auth service provided token
+
